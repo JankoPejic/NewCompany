@@ -7,11 +7,11 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import Typography from '@mui/material/Typography';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NotificationsIcon from '@mui/icons-material/Notifications';
+// import NotificationsIcon from '@mui/icons-material/Notifications';
 import { mainListItems, secondaryListItems } from './../components/listItems';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
+// import Badge from '@mui/material/Badge';
 import Toolbar from '@mui/material/Toolbar';
 import axiosInstance from '../Api/axios';
 import Box from '@mui/material/Box';
@@ -70,11 +70,13 @@ const Navigation = ({ children }) => {
           </Typography>
 
           <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
+            {/* <Badge badgeContent={4} color="secondary">
               <NotificationsIcon />
-            </Badge>
+            </Badge> */}
           </IconButton>
-          <label htmlFor="logout">Logout</label>
+          <label className="cursor-pointer" htmlFor="logout">
+            Logout
+          </label>
           <IconButton
             id="logout"
             color="white"
