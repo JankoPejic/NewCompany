@@ -33,6 +33,8 @@ export const mainListItems = (
       <ListItemText primary="Customers" />
     </ListItemButton>
 
+    {/* komenta */}
+
     <ListItemButton href="/suppliers">
       <ListItemIcon>
         <LocalShippingIcon />
