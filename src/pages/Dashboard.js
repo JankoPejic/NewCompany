@@ -21,6 +21,10 @@ import { mainListItems, secondaryListItems } from './../components/listItems';
 import Chart from './../components/Chart';
 import Deposits from './../components/Deposits';
 import Orders from './../components/Orders';
+import LogoutIcon from '@mui/icons-material/Logout';
+import axiosInstance from '../Api/axios';
+import { useNavigate } from 'react-router-dom';
+import AreYouSureModal from '../components/AreYouSureModal';
 
 function Copyright(props) {
   return (
@@ -90,9 +94,21 @@ const Drawer = styled(MuiDrawer, {
 const defaultTheme = createTheme();
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [open, setOpen] = React.useState(true);
+  const [isModalOpen, setIsModalOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
+  };
+
+  const handleLogout = async () => {
+    try {
+      const response = await axiosInstance.post('/logout');
+      if (response.status === 200) {
+        localStorage.removeItem('token');
+        navigate('/login');
+      }
+    } catch (error) {}
   };
 
   return (
@@ -131,8 +147,21 @@ export default function Dashboard() {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
+            <label htmlFor="logout">Logout</label>
+            <IconButton
+              id="logout"
+              color="white"
+              aria-label="add to shopping cart"
+              className="!border !border-white !text-white"
+              onClick={() => {
+                setIsModalOpen(true);
+              }}
+            >
+              <LogoutIcon />
+            </IconButton>
           </Toolbar>
         </AppBar>
+
         <Drawer variant="permanent" open={open}>
           <Toolbar
             sx={{
@@ -205,6 +234,14 @@ export default function Dashboard() {
           </Container>
         </Box>
       </Box>
+
+      <AreYouSureModal
+        isModalOpen={isModalOpen}
+        closeModal={() => setIsModalOpen(false)}
+        headerText="Are you sure you want to logout?"
+        subHeaderText="You will be logged out of the application."
+        onConfirm={handleLogout}
+      />
     </ThemeProvider>
   );
 }

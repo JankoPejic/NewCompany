@@ -1,51 +1,48 @@
 import axios from 'axios';
 import { getToken } from '../helpers/localStorage';
 
-const baseURL = process.env.REACT_APP_API;
-export const axiosPublic = axios.create({
-  baseURL,
-  withCredentials: true,
+const axiosInstance = axios.create({
+  baseURL: process.env.REACT_APP_API,
+  params: {},
 });
 
-export const axiosPrivate = axios.create({
-  baseURL,
-  headers: { 'Content-Type': 'application/json' },
-  withCredentials: true,
+axiosInstance.interceptors.request.use(async (config) => {
+  const { token } = getToken();
+  console.log('token :>> ', token);
+  if (token) config.headers.authorization = `Bearer ${token}`;
+  return config;
 });
 
-// console.log('GANJEEBOY', process.env.REACT_APP_API);
-// axiosInstance.interceptors.request.use(async (config) => {
-//   const { token } = getToken();
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
 
-//   if (token) config.headers.authorization = `${token}`;
+  async (error) => {
+    const originalRequest = error.config;
+    if (
+      error.response &&
+      (error.response.data === 'A token is required for authentication' ||
+        error.response.data === 'Invalid Token')
+    ) {
+      originalRequest._retry = true;
+      const response = await axiosInstance.get('/refresh');
+      const { token: newToken, refreshToken: newRefreshtoken } = response.data;
+      localStorage.setItem('token', newToken);
+      localStorage.setItem('refreshToken', newRefreshtoken);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+      axios.config.headers.authorization = `Bearer ${newToken}`;
+      return axiosInstance(originalRequest);
+    }
+    return Promise.reject(error);
+  }
+);
 
-//   return config;
-// });
+// Create a function to cancel a specific API call
+export const cancelAPICall = (token) => {
+  if (token) {
+    token.cancel('Request canceled');
+  }
+};
 
-// axiosInstance.interceptors.response.use(
-//   (response) => {
-//     return response;
-//   },
-//   async (error) => {
-//     if (
-//       error.response &&
-//       (error.response.data === 'A token is required for authentication' ||
-//         error.response.data === 'Invalid Token')
-//     ) {
-//       window.location.href = process.env.REACT_APP_BASEPATH;
-//       return false;
-//     }
-
-//     //return Promise.reject(error);
-//     return error;
-//   }
-// );
-
-// // Create a function to cancel a specific API call
-// export const cancelAPICall = (token) => {
-//   if (token) {
-//     token.cancel('Request canceled');
-//   }
-// };
-
-// export default axiosInstance;
+export default axiosInstance;

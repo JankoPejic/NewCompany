@@ -12,8 +12,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../Api/axios';
 
 function Login() {
   const navigate = useNavigate();
@@ -25,23 +25,17 @@ function Login() {
     const password = formData.get('password');
 
     try {
-      const response = await axios.post('http://localhost:5000/auth', {
+      const response = await axiosInstance.post('http://localhost:5000/auth', {
         username: email,
         password,
       });
-
-      navigate('/dashboard');
-      console.log(response.data);
-    } catch (error) {
-      if (error.response) {
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        console.log(error.request);
+      if (response.status === 200) {
+        localStorage.setItem('token', response.data.token);
+        navigate('/dashboard');
       } else {
-        console.log('Error', error.message);
+        alert('Invalid credentials!');
       }
+    } catch (error) {
       console.log(error.config);
     }
   };
