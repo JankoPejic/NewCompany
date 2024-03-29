@@ -12,31 +12,35 @@ import Inventory2Icon from '@mui/icons-material/Inventory2';
 
 export const mainListItems = (
   <React.Fragment>
-    <ListItemButton>
+    <ListItemButton href="/">
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
       <ListItemText primary="Dashboard" />
     </ListItemButton>
-    <ListItemButton>
+
+    <ListItemButton href="/orders">
       <ListItemIcon>
         <ShoppingCartIcon />
       </ListItemIcon>
       <ListItemText primary="Orders" />
     </ListItemButton>
-    <ListItemButton>
+
+    <ListItemButton href="/customers">
       <ListItemIcon>
         <PeopleIcon />
       </ListItemIcon>
       <ListItemText primary="Customers" />
     </ListItemButton>
-    <ListItemButton>
+
+    <ListItemButton href="/suppliers">
       <ListItemIcon>
         <LocalShippingIcon />
       </ListItemIcon>
       <ListItemText primary="Suppliers" />
     </ListItemButton>
-    <ListItemButton>
+
+    <ListItemButton href="/products">
       <ListItemIcon>
         <Inventory2Icon />
       </ListItemIcon>
