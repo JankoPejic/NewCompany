@@ -1,30 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
+import { Modal } from "@mui/material";
+import Box from "@mui/material/Box";
+import axiosInstance from "../Api/axios";
 
-import { Modal } from '@mui/material';
-import Box from '@mui/material/Box';
-import axiosInstance from '../Api/axios';
+const ModalEdit = ({ isModalOpen, closeModal, product, getData }) => {
+  const [name, setName] = useState("");
+  const [supplier, setSupplier] = useState("");
+  const [country, setCountry] = useState("");
+  const [price, setPrice] = useState("");
 
-const ModalEdit = ({
-  isModalOpen,
-  closeModal,
-  supplier,
-  getData,
-  headerText,
-  subHeaderText,
-}) => {
-  const [name, setName] = useState(supplier.name);
+  useEffect(() => {
+    console.log(product); // Add this line
+    if (product) {
+      setName(product.product_name);
+      setSupplier(product.supplier_name);
+      setCountry(product.country_name);
+      setPrice(product.price);
+    }
+  }, [product]);
 
   const handleSubmit = async () => {
-    const res = await axiosInstance.put(`/products/${supplier.id}`, {
-      name,
-    });
-    if (res.status === 200) {
-      closeModal();
-      getData();
-    } else {
-      console.error(res);
+    if (!product) {
+      console.error("Product is undefined");
+      return;
+    }
+    console.log(product.id); // Log product id
+    console.log(name, supplier, country, price); // Log form values
+    try {
+      const res = await axiosInstance.put(`/products/${product.id}`, {
+        product_name: name,
+        supplier_name: supplier,
+        country_name: country,
+        price: price,
+      });
+      // Rest of the code...
+    } catch (error) {
+      console.error(error.response.data); // Log server error message
     }
   };
+
   return (
     <Modal
       open={isModalOpen}
@@ -39,11 +53,32 @@ const ModalEdit = ({
             Edit Supplier
           </p>
           <input
-            type="name"
-            defaultValue={supplier.name}
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
+            placeholder="Product name..."
+          />
+          <input
+            type="text"
+            value={supplier}
+            onChange={(e) => setSupplier(e.target.value)}
             className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
             placeholder="Supplier name..."
-            onChange={(e) => setName(e.target.value)}
+          />
+          <input
+            type="text"
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+            className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
+            placeholder="Country..."
+          />
+          <input
+            type="text"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
+            placeholder="Price..."
           />
         </div>
         <Box className="flex justify-center mt-4 gap-4">

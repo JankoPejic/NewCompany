@@ -1,55 +1,81 @@
-import React from 'react';
-import Navigation from '../sections/Navigation';
-import './../index.css';
-import { useEffect, useState } from 'react';
-import axiosInstance from '../services/axiosInstance';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import EditIcon from '@mui/icons-material/Edit';
-import ModalCreate from '../components/ModalCreateProducts';
-import ModalEdit from '../components/ModalEditProducts';
+import React from "react";
+import Navigation from "../sections/Navigation";
+import "./../index.css";
+import { useEffect, useState } from "react";
+import axiosInstance from "../services/axiosInstance";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditIcon from "@mui/icons-material/Edit";
+import ModalCreate from "../components/ModalCreateProducts";
+import ModalEdit from "../components/ModalEditProducts";
+import ModalDelete from "../components/ModalDeleteProduct";
 
 const Products = () => {
   const [data, setData] = useState([]);
   const [supplierData, setSupplierData] = useState({
-    name: '',
+    id: "",
+    name: "",
   });
+
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [suppliers, setSuppliers] = useState([]);
+  const [products, setProducts] = useState([]); // Add products state
+  const [countries, setCountries] = useState([]);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [product, setProduct] = useState(null);
 
   useEffect(() => {
     getData();
     getSuppliers();
+    getCountries();
+    getProduct();
     // eslint-disable-next-line
-  }, []);
-  console.log(supplierData, 'supplierData');
+  }, [page]);
+
   const getData = async () => {
     try {
       setIsLoading(true);
-      const res = await axiosInstance.get('/products');
-
+      const res = await axiosInstance.get(`/products?page=${page}&limit=20`);
       if (res.status === 200) {
-        setData(res.data);
-        setIsLoading(false);
-      }
-
-      if (res.status === 204) {
-        setIsLoading(false);
+        setData(res.data.posts);
+        setTotalPages(Math.ceil(res.data.meta.total / 10));
       }
     } catch (error) {
-      setIsLoading(false);
       console.error(error);
-      // eslint-disable-next-line
-      // @ts-ignore
-      //   toast.error(error?.response?.data.message ?? 'Error getting data');
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  const nextPage = () => {
+    setPage((prevPage) => {
+      const next = prevPage + 1;
+      if (next > totalPages) {
+        return prevPage; // return current page if next page is greater than total pages
+      }
+      return next;
+    });
+  };
+
+  const prevPage = () => {
+    setPage((prevPage) => {
+      const prev = Math.max(prevPage - 1, 1);
+      if (prev < 1) {
+        return prevPage; // return current page if previous page is less than 1
+      }
+      return prev;
+    });
+  };
+
   const getSuppliers = async () => {
     try {
       setIsLoading(true);
-      const res = await axiosInstance.get('/suppliers');
+      const res = await axiosInstance.get("/suppliers");
 
       if (res.status === 200) {
         setSuppliers(res.data.suppliers);
@@ -62,9 +88,41 @@ const Products = () => {
     } catch (error) {
       setIsLoading(false);
       console.error(error);
-      // eslint-disable-next-line
-      // @ts-ignore
-      //   toast.error(error?.response?.data.message ?? 'Error getting data');
+    }
+  };
+
+  const getProduct = async () => {
+    try {
+      setIsLoading(true);
+      const res = await axiosInstance.get("/products");
+
+      if (res.status === 200) {
+        setProduct(res.data.products);
+        setIsLoading(false);
+      }
+
+      if (res.status === 204) {
+        setIsLoading(false);
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+    }
+  };
+
+  const getCountries = async () => {
+    try {
+      setIsLoading(true);
+      const res = await axiosInstance.get("/countries");
+      if (res.status === 200) {
+        setCountries(res.data.countries);
+        setIsLoading(false);
+      }
+      if (res.status === 204) {
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -83,20 +141,15 @@ const Products = () => {
       } else {
         // For adding a new supplier
         const newSupplierData = { name: supplierData.name }; // Extract only the name field
-        res = await axiosInstance.post('/suppliers', newSupplierData);
+        res = await axiosInstance.post("/suppliers", newSupplierData);
       }
 
       if (res.status === 200 || res.status === 201) {
         setIsModalOpen(false);
         setIsLoading(false);
         setSupplierData({
-          name: '',
+          name: "",
         });
-        // toast.success(
-        //   isEdit
-        //     ? 'Supplier edited successfully'
-        //     : 'Supplier added successfully'
-        // );
         setIsEdit(false);
 
         getData();
@@ -105,37 +158,31 @@ const Products = () => {
       setIsEdit(false);
       setIsLoading(false);
       console.error(error);
-      //   toast.error(error?.response?.data.message ?? 'There has been an error');
     }
   };
 
-  console.log(supplierData, 'test');
   const handleDelete = async (id) => {
     try {
       setIsLoading(true);
 
-      const res = await axiosInstance.delete(`/suppliers/${id}`);
+      const res = await axiosInstance.delete(`/products/${product.id}`);
 
       if (res.status === 200) {
         setIsConfirmationOpen(false);
         setIsLoading(false);
         setSupplierData({
-          id: '',
+          id: "",
         });
-        // toast.success('Supplier deleted successfully');
 
         getData();
       }
     } catch (error) {
       setSupplierData({
-        name: '',
+        name: "",
       });
       setIsConfirmationOpen(false);
       setIsLoading(false);
       console.error(error);
-      // eslint-disable-next-line
-      // @ts-ignore
-      //   toast.error(error?.response?.data.message ?? 'There has been an error');
     }
   };
 
@@ -170,65 +217,85 @@ const Products = () => {
           <table className="table">
             <thead>
               <tr>
-                <th>Product Name</th>
+                <th>Product Id</th>
                 <th>Supplier Name</th>
-                <th>Customer Name</th>
-                <th>Location</th>
+                <th>Product Name</th>
+                <th>Country Code</th>
                 <th>Price</th>
                 <th className="w-2/12">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {data?.length
-                ? data.map((supplier) => (
-                    <tr key={supplier.id}>
-                      <td>{supplier.product_name}</td>
-                      <td>{supplier.supplier_name}</td>
-                      <td>{supplier.customer_name}</td>
-                      <td>{supplier.country_name}</td>
-                      <td>{supplier.price}</td>
-                      <td className="flex gap-5">
-                        <button
-                          className="text-red-500 hover:text-red-600 flex items-center gap-1 transition"
-                          onClick={() => handleDelete(supplier.id)}
-                        >
-                          <DeleteForeverIcon />
-                          <span>Delete</span>
-                        </button>{' '}
-                        <button
-                          id="edit-supplier-button"
-                          color="white"
-                          className="text-blue-500 hover:text-blue-600 transition flex items-center gap-1"
-                          onClick={() => {
-                            setIsModalOpen(true);
-                            setIsEdit(true);
-                            setSupplierData({
-                              id: supplier.id,
-                              name: supplier.name,
-                            });
-                          }}
-                        >
-                          <EditIcon />
-                          <span>Edit</span>
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                : null}
+              {data?.map((product) => (
+                <tr key={product.id}>
+                  <td>{product.id}</td>
+                  <td>{product.supplier_name}</td>
+                  <td>{product.product_name}</td>
+                  <td>{product.country_name}</td>
+                  <td>{product.price}</td>
+                  <td className="flex gap-5">
+                    <button
+                      className="text-red-500 hover:text-red-600 flex items-center gap-1 transition"
+                      onClick={() => {
+                        setDeleteId(product.id);
+                        setIsConfirmationOpen(true);
+                      }}
+                    >
+                      <DeleteForeverIcon />
+                      <span>Delete</span>
+                    </button>
+                    <button
+                      className="text-blue-500 hover:text-blue-600 transition flex items-center gap-1"
+                      onClick={() => {
+                        setIsModalOpen(true);
+                        setIsEdit(true);
+                        setProduct(product); // set the selected product to the product state
+                      }}
+                    >
+                      <EditIcon />
+                      <span>Edit</span>
+                    </button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
+          {/* Pagination controls */}
+          <div>
+            <button onClick={prevPage} disabled={page === 1}>
+              Previous
+            </button>
+
+            <span>
+              {" "}
+              {page} / {totalPages}{" "}
+            </span>
+            <button onClick={nextPage} disabled={page === totalPages}>
+              Next
+            </button>
+          </div>
         </div>
       </Navigation>
+      {/* Modals */}
       <ModalCreate
         isModalOpen={isModalOpen && !isEdit}
         closeModal={() => setIsModalOpen(false)}
         getData={getData}
-        suppliers={suppliers}
+        suppliers={suppliers} // Pass suppliers data to the modal
+        countries={countries} // Pass countries data to the modal
       />
       <ModalEdit
         isModalOpen={isModalOpen && isEdit}
-        supplier={supplierData}
+        product={product} // pass the selected product data
         closeModal={() => setIsModalOpen(false)}
+        getData={getData}
+        suppliers={suppliers} // Pass suppliers data to the modal
+        countries={countries} // Pass countries data to the modal
+      />
+      <ModalDelete
+        isModalOpen={isConfirmationOpen && deleteId !== null}
+        product={{ id: deleteId }}
+        closeModal={() => setIsConfirmationOpen(false)}
         getData={getData}
       />
     </div>

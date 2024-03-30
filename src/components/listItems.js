@@ -9,24 +9,34 @@ import PeopleIcon from '@mui/icons-material/People';
 // import AssignmentIcon from '@mui/icons-material/Assignment';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
-
+const url = window.location.href;
+console.log('url :>> ', url);
 export const mainListItems = (
   <React.Fragment>
-    <ListItemButton href="/">
+    <ListItemButton
+      href="/"
+      className={`${url.includes('/dashboard') ? '!bg-slate-200' : ''}`}
+    >
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
       <ListItemText primary="Dashboard" />
     </ListItemButton>
 
-    <ListItemButton href="/orders">
+    <ListItemButton
+      href="/orders"
+      className={`${url.includes('/orders') ? '!bg-slate-200' : ''}`}
+    >
       <ListItemIcon>
         <ShoppingCartIcon />
       </ListItemIcon>
       <ListItemText primary="Orders" />
     </ListItemButton>
 
-    <ListItemButton href="/customers">
+    <ListItemButton
+      href="/customers"
+      className={`${url.includes('/customers') ? '!bg-slate-200' : ''}`}
+    >
       <ListItemIcon>
         <PeopleIcon />
       </ListItemIcon>
@@ -35,14 +45,20 @@ export const mainListItems = (
 
     {/* komenta */}
 
-    <ListItemButton href="/suppliers">
+    <ListItemButton
+      href="/suppliers"
+      className={`${url.includes('/suppliers') ? '!bg-slate-200' : ''}`}
+    >
       <ListItemIcon>
         <LocalShippingIcon />
       </ListItemIcon>
       <ListItemText primary="Suppliers" />
     </ListItemButton>
 
-    <ListItemButton href="/products">
+    <ListItemButton
+      href="/products"
+      className={`${url.includes('/products') ? '!bg-slate-200' : ''}`}
+    >
       <ListItemIcon>
         <Inventory2Icon />
       </ListItemIcon>
