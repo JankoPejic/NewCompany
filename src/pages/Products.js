@@ -204,7 +204,7 @@ const Products = () => {
               <button
                 id="create-supplier-button"
                 color="white"
-                className="bg-blue-500 px-2 py-1 rounded-lg text-white hover:bg-blue-600 transition"
+                className="px-4 py-2 bg-blue-500 rounded text-white hover:bg-blue-600 transition"
                 onClick={() => {
                   setIsModalOpen(true);
                   setIsEdit(false);
@@ -261,16 +261,28 @@ const Products = () => {
             </tbody>
           </table>
           {/* Pagination controls */}
-          <div>
-            <button onClick={prevPage} disabled={page === 1}>
+          <div className="flex justify-end space-x-4 pt-3">
+            <button
+              onClick={prevPage}
+              disabled={page === 1}
+              className={`w-24 px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 ${
+                page === 1 && "cursor-not-allowed"
+              }`}
+            >
               Previous
             </button>
 
-            <span>
-              {" "}
-              {page} / {totalPages}{" "}
+            <span className="text-lg text-blue-500 px-2 pt-1">
+              Page {page} of {totalPages}
             </span>
-            <button onClick={nextPage} disabled={page === totalPages}>
+
+            <button
+              onClick={nextPage}
+              disabled={page === totalPages}
+              className={`w-24 px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 ${
+                page === totalPages && "cursor-not-allowed"
+              }`}
+            >
               Next
             </button>
           </div>

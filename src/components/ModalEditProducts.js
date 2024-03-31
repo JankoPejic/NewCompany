@@ -23,16 +23,15 @@ const ModalEdit = ({ isModalOpen, closeModal, product, getData }) => {
     if (!product) {
       console.error("Product is undefined");
       return;
-    }
-    console.log(product.id); // Log product id
-    console.log(name, supplier, country, price); // Log form values
+    } // Log form values
     try {
       const res = await axiosInstance.put(`/products/${product.id}`, {
         product_name: name,
         supplier_name: supplier,
         country_name: country,
-        price: price,
+        price: parseFloat(price), // Convert price to a number
       });
+      console.log(res.data); // Log server response
       // Rest of the code...
     } catch (error) {
       console.error(error.response.data); // Log server error message
@@ -47,39 +46,47 @@ const ModalEdit = ({ isModalOpen, closeModal, product, getData }) => {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <div className="bg-white w-[400px] h-[250px] rounded-xl p-6 flex flex-col relative">
+      <div className="bg-white w-[400px] h-[390px] rounded-xl p-6 flex flex-col relative">
         <div className="pb-6">
-          <p className="pb-4 text-lg font-semibold text-center">
-            Edit Supplier
-          </p>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
-            placeholder="Product name..."
-          />
-          <input
-            type="text"
-            value={supplier}
-            onChange={(e) => setSupplier(e.target.value)}
-            className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
-            placeholder="Supplier name..."
-          />
-          <input
-            type="text"
-            value={country}
-            onChange={(e) => setCountry(e.target.value)}
-            className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
-            placeholder="Country..."
-          />
-          <input
-            type="text"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
-            placeholder="Price..."
-          />
+          <p className="pb-4 text-lg font-semibold text-center">Edit Product</p>
+          <div className="flex-col">
+            <div className="pt-3">
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
+                placeholder="Product name..."
+              />
+            </div>
+            <div className="pt-3">
+              <input
+                type="text"
+                value={supplier}
+                onChange={(e) => setSupplier(e.target.value)}
+                className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
+                placeholder="Supplier name..."
+              />
+            </div>
+            <div className="pt-3">
+              <input
+                type="text"
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
+                placeholder="Country..."
+              />
+            </div>
+            <div className="pt-3">
+              <input
+                type="text"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
+                placeholder="Price..."
+              />
+            </div>
+          </div>
         </div>
         <Box className="flex justify-center mt-4 gap-4">
           <button

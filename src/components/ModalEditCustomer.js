@@ -4,15 +4,9 @@ import { Modal } from "@mui/material";
 import Box from "@mui/material/Box";
 import axiosInstance from "../Api/axios";
 
-const ModalEdit = ({
-  isModalOpen,
-  customer,
-  closeModal,
-  supplier,
-  getData,
-}) => {
-  const [name, setName] = useState(supplier.name);
-  const [address, setAddress] = useState(supplier.address);
+const ModalEdit = ({ isModalOpen, customer, closeModal, getData }) => {
+  const [name, setName] = useState(customer.name);
+  const [address, setAddress] = useState(customer.address);
 
   const handleSubmit = async () => {
     const res = await axiosInstance.put(`/customers/${customer.id}`, {
@@ -39,20 +33,20 @@ const ModalEdit = ({
       <div className="bg-white w-[400px] h-[250px] rounded-xl p-6 flex flex-col relative">
         <div className="pb-6">
           <p className="pb-4 text-lg font-semibold text-center">
-            Edit Supplier
+            Edit Customer
           </p>
           <input
             type="name"
-            defaultValue={supplier.name}
+            defaultValue={customer.name}
             className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
-            placeholder="Supplier name..."
+            placeholder="Customer name..."
             onChange={(e) => setName(e.target.value)}
           />
           <input
             type="name"
-            defaultValue={supplier.address}
+            defaultValue={customer.address}
             className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
-            placeholder="Supplier name..."
+            placeholder="Customer address..."
             onChange={(e) => setAddress(e.target.value)}
           />
         </div>

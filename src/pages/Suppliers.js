@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import Navigation from '../sections/Navigation';
-import axiosInstance from '../services/axiosInstance';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import EditIcon from '@mui/icons-material/Edit';
-import ModalCreate from '../components/ModalCreate';
-import ModalEdit from '../components/ModalEdit';
-import ModalDelete from '../components/ModalDelete';
+import React, { useState, useEffect } from "react";
+import Navigation from "../sections/Navigation";
+import axiosInstance from "../services/axiosInstance";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditIcon from "@mui/icons-material/Edit";
+import ModalCreate from "../components/ModalCreate";
+import ModalEdit from "../components/ModalEdit";
+import ModalDelete from "../components/ModalDelete";
 
 const Suppliers = () => {
   const [data, setData] = useState([]);
   const [supplierData, setSupplierData] = useState({
-    name: '',
+    name: "",
   });
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +26,7 @@ const Suppliers = () => {
   const getData = async () => {
     try {
       setIsLoading(true);
-      const res = await axiosInstance.get('/suppliers');
+      const res = await axiosInstance.get("/suppliers");
 
       if (res.status === 200) {
         setData(res.data.suppliers);
@@ -61,7 +61,7 @@ const Suppliers = () => {
               <button
                 id="create-supplier-button"
                 color="white"
-                className="bg-blue-500 px-2 py-1 rounded-lg text-white hover:bg-blue-600 transition"
+                className="px-4 py-2 bg-blue-500 rounded text-white hover:bg-blue-600 transition"
                 onClick={() => {
                   setIsModalOpen(true);
                   setIsEdit(false);
@@ -96,7 +96,7 @@ const Suppliers = () => {
                       >
                         <DeleteForeverIcon />
                         <span>Delete</span>
-                      </button>{' '}
+                      </button>{" "}
                       <button
                         id="edit-supplier-button"
                         color="white"

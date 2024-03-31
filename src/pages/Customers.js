@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import Navigation from '../sections/Navigation';
-import axiosInstance from '../services/axiosInstance';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import EditIcon from '@mui/icons-material/Edit';
-import ModalCreate from '../components/ModalCreateCustomer';
-import ModalEdit from '../components/ModalEditCustomer';
-import ModalDelete from '../components/ModalDelete';
+import React, { useState, useEffect } from "react";
+import Navigation from "../sections/Navigation";
+import axiosInstance from "../services/axiosInstance";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditIcon from "@mui/icons-material/Edit";
+import ModalCreate from "../components/ModalCreateCustomer";
+import ModalEdit from "../components/ModalEditCustomer";
+import ModalDelete from "../components/ModalDeleteCustomer";
 
 const Suppliers = () => {
   const [data, setData] = useState([]);
   const [supplierData, setSupplierData] = useState({
-    name: '',
+    name: "",
   });
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +26,7 @@ const Suppliers = () => {
   const getData = async () => {
     try {
       setIsLoading(true);
-      const res = await axiosInstance.get('/customers');
+      const res = await axiosInstance.get("/customers");
 
       if (res.status === 200) {
         setData(res.data.customers);
@@ -61,13 +61,13 @@ const Suppliers = () => {
               <button
                 id="create-supplier-button"
                 color="white"
-                className="bg-blue-500 px-2 py-1 rounded-lg text-white hover:bg-blue-600 transition"
+                className="px-4 py-2 bg-blue-500 rounded text-white hover:bg-blue-600 transition"
                 onClick={() => {
                   setIsModalOpen(true);
                   setIsEdit(false);
                 }}
               >
-                Create Supplier
+                Create Customer
               </button>
             </div>
           </div>
@@ -82,33 +82,34 @@ const Suppliers = () => {
             </thead>
             <tbody>
               {data &&
-                data.map((supplier) => (
-                  <tr key={supplier.id}>
-                    <td>{supplier.id}</td>
-                    <td>{supplier.name}</td>
-                    <td>{supplier.address}</td>
+                data.map((customer) => (
+                  <tr key={customer.id}>
+                    <td>{customer.id}</td>
+                    <td>{customer.name}</td>
+                    <td>{customer.address}</td>
 
                     <td className="flex gap-5">
                       <button
                         className="text-red-500 hover:text-red-600 flex items-center gap-1 transition"
                         onClick={() => {
-                          setDeleteId(supplier.id);
+                          setDeleteId(customer.id);
                           setIsConfirmationOpen(true);
                         }}
                       >
                         <DeleteForeverIcon />
                         <span>Delete</span>
-                      </button>{' '}
+                      </button>{" "}
                       <button
-                        id="edit-supplier-button"
+                        id="edit-customer-button"
                         color="white"
                         className="text-blue-500 hover:text-blue-600 transition flex items-center gap-1"
                         onClick={() => {
                           setIsModalOpen(true);
                           setIsEdit(true);
                           setSupplierData({
-                            id: supplier.id,
-                            name: supplier.name,
+                            id: customer.id,
+                            name: customer.name,
+                            address: customer.address, // Added address here
                           });
                         }}
                       >
@@ -129,13 +130,13 @@ const Suppliers = () => {
       />
       <ModalEdit
         isModalOpen={isModalOpen && isEdit}
-        supplier={supplierData}
+        customer={supplierData} // Changed from supplier to customer
         closeModal={() => setIsModalOpen(false)}
         getData={getData}
       />
       <ModalDelete
         isModalOpen={isConfirmationOpen && deleteId !== null}
-        supplier={{ id: deleteId }}
+        customer={{ id: deleteId }} // Changed from supplier to customer
         closeModal={() => setIsConfirmationOpen(false)}
         getData={getData}
       />

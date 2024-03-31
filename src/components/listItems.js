@@ -1,21 +1,21 @@
-import * as React from 'react';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
+import * as React from "react";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 // import ListSubheader from '@mui/material/ListSubheader';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import PeopleIcon from '@mui/icons-material/People';
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import PeopleIcon from "@mui/icons-material/People";
 // import AssignmentIcon from '@mui/icons-material/Assignment';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import Inventory2Icon from '@mui/icons-material/Inventory2';
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import Inventory2Icon from "@mui/icons-material/Inventory2";
 const url = window.location.href;
-console.log('url :>> ', url);
+console.log("url :>> ", url);
 export const mainListItems = (
   <React.Fragment>
     <ListItemButton
       href="/"
-      className={`${url.includes('/dashboard') ? '!bg-slate-200' : ''}`}
+      className={`${url.includes("/dashboard") ? "!bg-slate-200" : ""}`}
     >
       <ListItemIcon>
         <DashboardIcon />
@@ -25,7 +25,7 @@ export const mainListItems = (
 
     <ListItemButton
       href="/orders"
-      className={`${url.includes('/orders') ? '!bg-slate-200' : ''}`}
+      className={`${url.includes("/orders") ? "!bg-slate-200" : ""}`}
     >
       <ListItemIcon>
         <ShoppingCartIcon />
@@ -35,7 +35,7 @@ export const mainListItems = (
 
     <ListItemButton
       href="/customers"
-      className={`${url.includes('/customers') ? '!bg-slate-200' : ''}`}
+      className={`${url.includes("/customers") ? "!bg-slate-200" : ""}`}
     >
       <ListItemIcon>
         <PeopleIcon />
@@ -47,7 +47,7 @@ export const mainListItems = (
 
     <ListItemButton
       href="/suppliers"
-      className={`${url.includes('/suppliers') ? '!bg-slate-200' : ''}`}
+      className={`${url.includes("/suppliers") ? "!bg-slate-200" : ""}`}
     >
       <ListItemIcon>
         <LocalShippingIcon />
@@ -57,7 +57,7 @@ export const mainListItems = (
 
     <ListItemButton
       href="/products"
-      className={`${url.includes('/products') ? '!bg-slate-200' : ''}`}
+      className={`${url.includes("/products") ? "!bg-slate-200" : ""}`}
     >
       <ListItemIcon>
         <Inventory2Icon />
