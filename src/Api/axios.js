@@ -8,7 +8,6 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(async (config) => {
   const { token } = getToken();
-  console.log('token :>> ', token);
   if (token) config.headers.authorization = `Bearer ${token}`;
   return config;
 });
@@ -37,6 +36,15 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export const getUserInfo = async () => {
+  try {
+    const response = await axiosInstance.get('/get-user-info');
+    return response.data;
+  } catch (error) {
+    throw new Error('Error fetching user data');
+  }
+};
 
 // Create a function to cancel a specific API call
 export const cancelAPICall = (token) => {

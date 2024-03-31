@@ -27,7 +27,7 @@ function Login() {
       });
       if (response.status === 200) {
         localStorage.setItem('token', response.data.token);
-        navigate('/');
+        navigate('/dashboard');
       } else {
         alert('Invalid credentials!');
       }

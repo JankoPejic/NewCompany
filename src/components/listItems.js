@@ -14,8 +14,8 @@ console.log("url :>> ", url);
 export const mainListItems = (
   <React.Fragment>
     <ListItemButton
-      href="/"
-      className={`${url.includes("/dashboard") ? "!bg-slate-200" : ""}`}
+      href="/dashboard"
+      className={`${url.includes('/dashboard') ? '!bg-slate-200' : ''}`}
     >
       <ListItemIcon>
         <DashboardIcon />
