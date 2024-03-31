@@ -17,7 +17,6 @@ const user = React.useContext(UserContext)
 async function getOrders (user) {
   try{
     if(user){
-      console.log('user :>> ', user);
       const result = await axiosInstance.get('http://localhost:5000/orders/' + user.user.id);
       if(result.data.orders){
         setOrders(result.data.orders)
@@ -30,7 +29,6 @@ async function getOrders (user) {
 
 useEffect(() => {
     getOrders(user)
-    console.log("getOrdersEff");
 },[user])
 
   return (

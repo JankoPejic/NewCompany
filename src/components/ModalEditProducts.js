@@ -10,7 +10,6 @@ const ModalEdit = ({ isModalOpen, closeModal, product, getData }) => {
   const [price, setPrice] = useState("");
 
   useEffect(() => {
-    console.log(product); // Add this line
     if (product) {
       setName(product.product_name);
       setSupplier(product.supplier_name);
