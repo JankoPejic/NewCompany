@@ -12,15 +12,14 @@ import { UserContext } from "../App";
 import ModalCreateOrder from "../components/modalCreateOrder";
 
 const Orders = () => {
-
-  const user = React.useContext(UserContext)
+  const user = React.useContext(UserContext);
 
   const [data, setData] = useState([]);
   const [supplierData, setSupplierData] = useState({
     id: "",
     name: "",
   });
-  
+
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -33,24 +32,24 @@ const Orders = () => {
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
   const [products, setProducts] = useState(null);
-  const [orders, setOrders] = useState([])
+  const [orders, setOrders] = useState([]);
 
-async function getOrders (user) {
-  try{
-    if(user){
-      const result = await axiosInstance.get('http://localhost:5000/orders/' + user.user.id);
-      if(result.data.orders){
-        setOrders(result.data.orders)
+  async function getOrders(user) {
+    try {
+      if (user) {
+        const result = await axiosInstance.get("/orders/" + user.user.id);
+        if (result.data.orders) {
+          setOrders(result.data.orders);
+        }
       }
+    } catch (error) {
+      console.log(error);
     }
-  }catch(error){
-    console.log(error)
-  }
   }
 
-useEffect(() => {
-    getOrders(user)
-},[user])
+  useEffect(() => {
+    getOrders(user);
+  }, [user]);
 
   useEffect(() => {
     getData();
@@ -120,7 +119,7 @@ useEffect(() => {
       const res = await axiosInstance.get("/customers");
 
       if (res.status === 200) {
-        console.log('res.data :>> ', res.data);
+        console.log("res.data :>> ", res.data);
         setCustomers(res.data.customers);
         setIsLoading(false);
       }
@@ -179,8 +178,7 @@ useEffect(() => {
                 id="search-suppliers-input"
                 type="search"
                 className="h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
-                placeholder="Search orders..."
-              ></input>
+                placeholder="Search orders..."></input>
             </div>
             <div>
               <button
@@ -190,8 +188,7 @@ useEffect(() => {
                 onClick={() => {
                   setIsModalOpen(true);
                   setIsEdit(false);
-                }}
-              >
+                }}>
                 New Order
               </button>
             </div>
@@ -214,12 +211,12 @@ useEffect(() => {
                   <td>{order.created_at.split("T")[0]}</td>
                   <td>
                     <select>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
                     </select>
-                    </td>
+                  </td>
                   <td>{order.order_amount}</td>
                   <td>{order.address}</td>
                   <td className="flex gap-5">
@@ -228,8 +225,7 @@ useEffect(() => {
                       onClick={() => {
                         setDeleteId(order.id);
                         setIsConfirmationOpen(true);
-                      }}
-                    >
+                      }}>
                       <DeleteForeverIcon />
                       <span>Delete</span>
                     </button>
@@ -239,8 +235,7 @@ useEffect(() => {
                         setIsModalOpen(true);
                         setIsEdit(true);
                         setProducts(order.id); // set the selected product to the product state
-                      }}
-                    >
+                      }}>
                       <EditIcon />
                       <span>Edit</span>
                     </button>
@@ -256,8 +251,7 @@ useEffect(() => {
               disabled={page === 1}
               className={`w-24 px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 ${
                 page === 1 && "cursor-not-allowed"
-              }`}
-            >
+              }`}>
               Previous
             </button>
 
@@ -270,8 +264,7 @@ useEffect(() => {
               disabled={page === totalPages}
               className={`w-24 px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 ${
                 page === totalPages && "cursor-not-allowed"
-              }`}
-            >
+              }`}>
               Next
             </button>
           </div>
@@ -305,4 +298,3 @@ useEffect(() => {
 };
 
 export default Orders;
-
