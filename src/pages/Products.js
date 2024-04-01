@@ -126,66 +126,6 @@ const Products = () => {
     }
   };
 
-  const handleAddOrEditSupplier = async () => {
-    try {
-      setIsLoading(true);
-
-      let res;
-
-      if (isEdit) {
-        // For editing an existing supplier
-        res = await axiosInstance.put(
-          `/suppliers/${supplierData.id}`,
-          supplierData
-        );
-      } else {
-        // For adding a new supplier
-        const newSupplierData = { name: supplierData.name }; // Extract only the name field
-        res = await axiosInstance.post("/suppliers", newSupplierData);
-      }
-
-      if (res.status === 200 || res.status === 201) {
-        setIsModalOpen(false);
-        setIsLoading(false);
-        setSupplierData({
-          name: "",
-        });
-        setIsEdit(false);
-
-        getData();
-      }
-    } catch (error) {
-      setIsEdit(false);
-      setIsLoading(false);
-      console.error(error);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      setIsLoading(true);
-
-      const res = await axiosInstance.delete(`/products/${product.id}`);
-
-      if (res.status === 200) {
-        setIsConfirmationOpen(false);
-        setIsLoading(false);
-        setSupplierData({
-          id: "",
-        });
-
-        getData();
-      }
-    } catch (error) {
-      setSupplierData({
-        name: "",
-      });
-      setIsConfirmationOpen(false);
-      setIsLoading(false);
-      console.error(error);
-    }
-  };
-
   return (
     <div>
       <Navigation>

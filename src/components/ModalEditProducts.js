@@ -5,15 +5,39 @@ import axiosInstance from "../Api/axios";
 
 const ModalEdit = ({ isModalOpen, closeModal, product, getData }) => {
   const [name, setName] = useState("");
-  const [supplier, setSupplier] = useState("");
-  const [country, setCountry] = useState("");
+  const [supplierId, setSupplierId] = useState("");
+  const [countryId, setCountryId] = useState("");
   const [price, setPrice] = useState("");
+  const [suppliers, setSuppliers] = useState([]);
+  const [countries, setCountries] = useState([]);
 
   useEffect(() => {
+    // Fetch suppliers
+    axiosInstance
+      .get("/suppliers")
+      .then((response) => {
+        setSuppliers(response.data.suppliers);
+        console.log(response.data, "suppliers");
+      })
+      .catch((error) => {
+        console.error("Error fetching suppliers:", error);
+      });
+
+    // Fetch countries
+    axiosInstance
+      .get("/countries")
+      .then((response) => {
+        setCountries(response.data.countries);
+      })
+      .catch((error) => {
+        console.error("Error fetching countries:", error);
+      });
+
+    // Set initial product values if available
     if (product) {
       setName(product.product_name);
-      setSupplier(product.supplier_name);
-      setCountry(product.country_name);
+      setSupplierId(product.supplier_id);
+      setCountryId(product.country_id);
       setPrice(product.price);
     }
   }, [product]);
@@ -22,16 +46,19 @@ const ModalEdit = ({ isModalOpen, closeModal, product, getData }) => {
     if (!product) {
       console.error("Product is undefined");
       return;
-    } // Log form values
+    }
+
     try {
       const res = await axiosInstance.put(`/products/${product.id}`, {
         product_name: name,
-        supplier_name: supplier,
-        country_name: country,
-        price: parseFloat(price), // Convert price to a number
+        supplier_id: supplierId,
+        country_id: countryId,
+        price: parseFloat(price),
       });
       console.log(res.data); // Log server response
       // Rest of the code...
+      closeModal();
+      getData();
     } catch (error) {
       console.error(error.response.data); // Log server error message
     }
@@ -59,22 +86,32 @@ const ModalEdit = ({ isModalOpen, closeModal, product, getData }) => {
               />
             </div>
             <div className="pt-3">
-              <input
-                type="text"
-                value={supplier}
-                onChange={(e) => setSupplier(e.target.value)}
+              <select
+                value={supplierId}
+                onChange={(e) => setSupplierId(e.target.value)}
                 className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
-                placeholder="Supplier name..."
-              />
+              >
+                <option value="">Select Supplier</option>
+                {suppliers.map((supplier) => (
+                  <option key={supplier.id} value={supplier.id}>
+                    {supplier.name}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="pt-3">
-              <input
-                type="text"
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
+              <select
+                value={countryId}
+                onChange={(e) => setCountryId(e.target.value)}
                 className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
-                placeholder="Country..."
-              />
+              >
+                <option value="">Select Country</option>
+                {countries.map((country) => (
+                  <option key={country.id} value={country.id}>
+                    {country.name}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="pt-3">
               <input
