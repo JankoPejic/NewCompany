@@ -37,7 +37,9 @@ const Orders = () => {
   async function getOrders(user) {
     try {
       if (user) {
-        const result = await axiosInstance.get("/orders/" + user.user.id);
+        const result = await axiosInstance.get(
+          "http://localhost:5000/orders/" + user.user.id
+        );
         if (result.data.orders) {
           setOrders(result.data.orders);
         }
@@ -170,15 +172,16 @@ const Orders = () => {
   return (
     <div>
       <Navigation>
-        <div className="table-container pt-[100px] pl-[70px] pr-[70px]">
-          <div className="w-full pb-4 flex justify-between">
-            <div className="flex items-center gap-3 relative">
+        <div className="table-container pt-[100px] lg:pl-[70px] lg:pr-[70px]">
+          <div className="w-full pb-4 flex flex-col lg:flex-row gap-3 lg:gap-0 justify-between">
+            <div className="flex flex-col lg:flex-row lg:items-center pr-3 lg:pr-0 gap-3 relative">
               <label for="search-suppliers-input">Orders:</label>
               <input
                 id="search-suppliers-input"
                 type="search"
                 className="h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
-                placeholder="Search orders..."></input>
+                placeholder="Search orders..."
+              ></input>
             </div>
             <div>
               <button
@@ -188,62 +191,70 @@ const Orders = () => {
                 onClick={() => {
                   setIsModalOpen(true);
                   setIsEdit(false);
-                }}>
+                }}
+              >
                 New Order
               </button>
             </div>
           </div>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Customer</th>
-                <th>Order date</th>
-                <th>Products</th>
-                <th>Order Amount</th>
-                <th>Address</th>
-                <th className="w-2/12">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders?.map((order) => (
-                <tr key={order.id}>
-                  <td>{order.customer_name}</td>
-                  <td>{order.created_at.split("T")[0]}</td>
-                  <td>
-                    <select>
-                      <option>1</option>
-                      <option>2</option>
-                      <option>3</option>
-                      <option>4</option>
-                    </select>
-                  </td>
-                  <td>{order.order_amount}</td>
-                  <td>{order.address}</td>
-                  <td className="flex gap-5">
-                    <button
-                      className="text-red-500 hover:text-red-600 flex items-center gap-1 transition"
-                      onClick={() => {
-                        setDeleteId(order.id);
-                        setIsConfirmationOpen(true);
-                      }}>
-                      <DeleteForeverIcon />
-                      <span>Delete</span>
-                    </button>
-                    <button
-                      className="text-blue-500 hover:text-blue-600 transition flex items-center gap-1"
-                      onClick={() => {
-                        setIsModalOpen(true);
-                        setIsEdit(true);
-                        setProducts(order.id); // set the selected product to the product state
-                      }}>
-                      <EditIcon />
-                      <span>Edit</span>
-                    </button>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Order date</th>
+                  <th>Products</th>
+                  <th>Order Amount</th>
+                  <th>Address</th>
+                  <th className="w-2/12">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {orders?.map((order) => (
+                  <tr key={order.id}>
+                    <td>{order.customer_name}</td>
+                    <td>{order.created_at.split("T")[0]}</td>
+                    <td>
+                      <select>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                      </select>
+                    </td>
+                    <td>{order.order_amount}</td>
+                    <td>{order.address}</td>
+                    <td>
+                      <div className="flex gap-2.5">
+                        <button
+                          className=" text-red-500 hover:text-red-600 flex items-center gap-1 transition"
+                          onClick={() => {
+                            setDeleteId(order.id);
+                            setIsConfirmationOpen(true);
+                          }}
+                        >
+                          <DeleteForeverIcon />
+                          <span>Delete</span>
+                        </button>
+                        <button
+                          className="text-blue-500 hover:text-blue-600 transition flex items-center gap-1"
+                          onClick={() => {
+                            setIsModalOpen(true);
+                            setIsEdit(true);
+                            setProducts(order.id); // set the selected product to the product state
+                          }}
+                        >
+                          <EditIcon />
+                          <span>Edit</span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
           {/* Pagination controls */}
           <div className="flex justify-end space-x-4 pt-3">
             <button
@@ -251,7 +262,8 @@ const Orders = () => {
               disabled={page === 1}
               className={`w-24 px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 ${
                 page === 1 && "cursor-not-allowed"
-              }`}>
+              }`}
+            >
               Previous
             </button>
 
@@ -264,7 +276,8 @@ const Orders = () => {
               disabled={page === totalPages}
               className={`w-24 px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50 ${
                 page === totalPages && "cursor-not-allowed"
-              }`}>
+              }`}
+            >
               Next
             </button>
           </div>

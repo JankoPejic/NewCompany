@@ -30,13 +30,22 @@
 .active-icon svg {
   color: blue;
 }
-.css-13cymwt-control{
+.css-13cymwt-control {
   outline: 2px solid transparent !important;
   outline-offset: 2px !important;
-  padding-top: 0.25rem  !important;
-  padding-bottom: 0.25rem  !important;
-  border-color: rgb(156 163 175)  !important;
-  border-radius: 0.75rem  !important;
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.25rem !important;
+  border-color: rgb(156 163 175) !important;
+  border-radius: 0.75rem !important;
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+@media (max-width: 600px) {
+  .table th,
+  .table td {
+    padding: 6px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
 }

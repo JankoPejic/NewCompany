@@ -46,9 +46,9 @@ const Suppliers = () => {
   return (
     <div>
       <Navigation>
-        <div className="table-container pt-[100px] pl-[70px] pr-[70px]">
-          <div className="w-full pb-4 flex justify-between">
-            <div className="flex items-center gap-3 relative">
+        <div className="table-container pt-[100px] lg:pl-[70px] lg:pr-[70px]">
+          <div className="w-full pb-4 flex flex-col lg:flex-row gap-3 lg:gap-0 justify-between">
+            <div className="flex flex-col lg:flex-row lg:items-center pr-3 lg:pr-0 gap-3 relative">
               <label htmlFor="search-suppliers-input">Suppliers:</label>
               <input
                 id="search-suppliers-input"
@@ -71,53 +71,55 @@ const Suppliers = () => {
               </button>
             </div>
           </div>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th className="w-2/12">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data &&
-                data.map((supplier) => (
-                  <tr key={supplier.id}>
-                    <td>{supplier.id}</td>
-                    <td>{supplier.name}</td>
+          <div className="overflow-x-auto">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th className="w-2/12">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data &&
+                  data.map((supplier) => (
+                    <tr key={supplier.id}>
+                      <td>{supplier.id}</td>
+                      <td>{supplier.name}</td>
 
-                    <td className="flex gap-5">
-                      <button
-                        className="text-red-500 hover:text-red-600 flex items-center gap-1 transition"
-                        onClick={() => {
-                          setDeleteId(supplier.id);
-                          setIsConfirmationOpen(true);
-                        }}
-                      >
-                        <DeleteForeverIcon />
-                        <span>Delete</span>
-                      </button>{" "}
-                      <button
-                        id="edit-supplier-button"
-                        color="white"
-                        className="text-blue-500 hover:text-blue-600 transition flex items-center gap-1"
-                        onClick={() => {
-                          setIsModalOpen(true);
-                          setIsEdit(true);
-                          setSupplierData({
-                            id: supplier.id,
-                            name: supplier.name,
-                          });
-                        }}
-                      >
-                        <EditIcon />
-                        <span>Edit</span>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+                      <td className="flex gap-5">
+                        <button
+                          className="text-red-500 hover:text-red-600 flex items-center gap-1 transition"
+                          onClick={() => {
+                            setDeleteId(supplier.id);
+                            setIsConfirmationOpen(true);
+                          }}
+                        >
+                          <DeleteForeverIcon />
+                          <span>Delete</span>
+                        </button>{" "}
+                        <button
+                          id="edit-supplier-button"
+                          color="white"
+                          className="text-blue-500 hover:text-blue-600 transition flex items-center gap-1"
+                          onClick={() => {
+                            setIsModalOpen(true);
+                            setIsEdit(true);
+                            setSupplierData({
+                              id: supplier.id,
+                              name: supplier.name,
+                            });
+                          }}
+                        >
+                          <EditIcon />
+                          <span>Edit</span>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </Navigation>
       <ModalCreate
