@@ -51,7 +51,7 @@ const ModalEdit = ({
       console.error("Selected supplier or country is not found in the list");
       return;
     }
-
+    //ganje
     try {
       const res = await axiosInstance.put(`/products/${product.id}`, {
         product_name: name,
