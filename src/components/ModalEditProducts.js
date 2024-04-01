@@ -12,24 +12,40 @@ const ModalEdit = ({
   closeModal,
 }) => {
   const [name, setName] = useState("");
-  const [selectedSupplier, setSelectedSupplier] = useState("");
-  const [country, setCountry] = useState("");
+  const [supplierId, setSupplierId] = useState("");
+  const [countryId, setCountryId] = useState("");
   const [price, setPrice] = useState("");
-  const [existingSuppliers, setExistingSuppliers] = useState([]);
-  const [existingCountries, setExistingCountries] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
+  const [country, setCountry] = useState([]);
 
   useEffect(() => {
-    // Set existing suppliers and countries when component mounts
-    setExistingSuppliers(supplierList.map((supplier) => supplier.name));
-    setExistingCountries(countries.map((country) => country.name));
+    // Fetch suppliers
+    axiosInstance
+      .get("/suppliers")
+      .then((response) => {
+        setSuppliers(response.data.suppliers);
+        console.log(response.data, "suppliers");
+      })
+      .catch((error) => {
+        console.error("Error fetching suppliers:", error);
+      });
 
-    // Set product data to input fields when product prop changes
+    // Fetch countries
+    axiosInstance
+      .get("/countries")
+      .then((response) => {
+        setCountry(response.data.countries);
+      })
+      .catch((error) => {
+        console.error("Error fetching countries:", error);
+      });
 
+    // Set initial product values if available
     if (product) {
-      setName(product.product_name || "");
-      setSelectedSupplier(product.supplier_name || "");
-      setCountry(product.country_name || "");
-      setPrice(product.price || "");
+      setName(product.product_name);
+      setSupplierId(product.supplier_id);
+      setCountryId(product.country_id);
+      setPrice(product.price);
     }
   }, [product, supplierList, countries]);
 
@@ -39,27 +55,16 @@ const ModalEdit = ({
       console.error("Product is undefined");
       return;
     }
-    // Find the supplier id and country id based on the selected names
-    const selectedSupplierId = supplierList.find(
-      (supplier) => supplier.name === selectedSupplier
-    )?.id;
-    const selectedCountryId = countries.find(
-      (countryItem) => countryItem.name === country
-    )?.id;
 
-    if (!selectedSupplierId || !selectedCountryId) {
-      console.error("Selected supplier or country is not found in the list");
-      return;
-    }
-    //ganje
     try {
       const res = await axiosInstance.put(`/products/${product.id}`, {
         product_name: name,
-        supplier_id: selectedSupplierId,
-        country_id: selectedCountryId,
+        supplier_id: supplierId,
+        country_id: countryId,
         price: parseFloat(price),
       });
-      console.log(res.data);
+      console.log(res.data); // Log server response
+      // Rest of the code...
       closeModal();
       getData();
     } catch (error) {
@@ -90,28 +95,28 @@ const ModalEdit = ({
             </div>
             <div className="pt-3">
               <select
-                value={selectedSupplier}
-                onChange={(e) => setSelectedSupplier(e.target.value)}
+                value={supplierId}
+                onChange={(e) => setSupplierId(e.target.value)}
                 className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
               >
-                <option value="">Select a supplier...</option>
-                {existingSuppliers.map((supplier, index) => (
-                  <option key={index} value={supplier}>
-                    {supplier}
+                <option value="">Select Supplier</option>
+                {suppliers.map((supplier) => (
+                  <option key={supplier.id} value={supplier.id}>
+                    {supplier.name}
                   </option>
                 ))}
               </select>
             </div>
             <div className="pt-3">
               <select
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
+                value={countryId}
+                onChange={(e) => setCountryId(e.target.value)}
                 className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
               >
-                <option value="">Select a country...</option>
-                {existingCountries.map((country, index) => (
-                  <option key={index} value={country}>
-                    {country}
+                <option value="">Select Country</option>
+                {countries.map((country) => (
+                  <option key={country.id} value={country.id}>
+                    {country.name}
                   </option>
                 ))}
               </select>
