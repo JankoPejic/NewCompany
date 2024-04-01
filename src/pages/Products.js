@@ -301,7 +301,7 @@ const Products = () => {
         product={product} // pass the selected product data
         closeModal={() => setIsModalOpen(false)}
         getData={getData}
-        suppliers={suppliers} // Pass suppliers data to the modal
+        supplierList={suppliers} // Pass suppliers data to the modal
         countries={countries} // Pass countries data to the modal
       />
       <ModalDelete
