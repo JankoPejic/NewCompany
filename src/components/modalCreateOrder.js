@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal } from "@mui/material";
 import Box from "@mui/material/Box";
 import axiosInstance from "../services/axiosInstance";
@@ -18,7 +18,20 @@ const ModalCreateOrder = ({
   const [country, setCountry] = useState("Select Country");
   const [orderDate, setOrderDate] = useState("");
   const [orderItems, setOrderItems] = useState([{ productId: "", quantity: "" }]);
-  const [showDatePicker, setShowDatePicker] = useState(false); // State to manage visibility of date picker
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [totalAmount, setTotalAmount] = useState(0);
+  const todayDate = new Date()
+  console.log('todayDate :>> ', todayDate.toUTCString());
+  useEffect(() => {
+    let total = 0;
+    orderItems.forEach(item => {
+      const product = products?.find(product => product.id === item.productId);
+      if (product) {
+        total += (product.price * item.quantity);
+      }
+    });
+    setTotalAmount(total);
+  }, [orderItems]);
 
   const customerOptions = customers.map(customer => ({
     label: customer.name,
@@ -116,7 +129,7 @@ const ModalCreateOrder = ({
                 type="text"
                 value={orderDate}
                 onChange={(e) => setOrderDate(e.target.value)}
-                onFocus={() => setShowDatePicker(!showDatePicker)}
+                onClick={() => setShowDatePicker(!showDatePicker)}
                 placeholder="Select Order Date..."
                 className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400 mb-4"
               />
@@ -171,6 +184,7 @@ const ModalCreateOrder = ({
                 </div>
               ))}
             </div>
+            <div>Total Order Amount: {totalAmount}</div>
           </div>
         </div>
         <Box className="flex justify-center mt-[50px] gap-5">
