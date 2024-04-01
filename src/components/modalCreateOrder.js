@@ -3,7 +3,8 @@ import { Modal } from "@mui/material";
 import Box from "@mui/material/Box";
 import axiosInstance from "../services/axiosInstance";
 import Select from "react-select";
-import "../index.css"
+import "../index.css";
+
 const ModalCreateOrder = ({
   isModalOpen,
   closeModal,
@@ -17,6 +18,7 @@ const ModalCreateOrder = ({
   const [country, setCountry] = useState("Select Country");
   const [orderDate, setOrderDate] = useState("");
   const [orderItems, setOrderItems] = useState([{ productId: "", quantity: "" }]);
+  const [showDatePicker, setShowDatePicker] = useState(false); // State to manage visibility of date picker
 
   const customerOptions = customers.map(customer => ({
     label: customer.name,
@@ -27,7 +29,6 @@ const ModalCreateOrder = ({
     label: country.name,
     value: country.id
   }));
-
 
   const handleAddProduct = () => {
     setOrderItems([...orderItems, { productId: "", quantity: "" }]);
@@ -51,7 +52,6 @@ const ModalCreateOrder = ({
       buttons[0].classList.add("invisible");
     }
   };
-
 
   const handleProductChange = (index, productId) => {
     const updatedOrderItems = [...orderItems];
@@ -99,67 +99,78 @@ const ModalCreateOrder = ({
         <div className="pb-6">
           <p className="pb-4 text-lg font-semibold text-center">New Order</p>
           <div className="flex-col">
-          <Select
-  options={customerOptions}
-  value={customer}
-  onChange={setCustomer}
-  placeholder="Select Customer..."
-/>
-<Select
-  options={countryOptions}
-  value={country}
-  onChange={setCountry}
-  placeholder="Select Country..."
-/>
-<input
-  type="date"
-  className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400 mb-4"
-  placeholder="Select Order Date..."
-  value={orderDate}
-  onChange={(e) => setOrderDate(e.target.value)}
-/>
-<div className="w-full border-2 rounded-xl mb-4 p-2">
-  <p className="mb-2 font-semibold">Select Products:</p>
-  {orderItems.map((item, index) => (
-    <div key={index} className="flex items-center mb-2">
-      <select
-        value={item.productId}
-        onChange={(e) => handleProductChange(index, e.target.value)}
-        className="mr-2 hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
-      >
-        <option value="">Select Product...</option>
-        {products?.map((product) => (
-          <option key={product.id} value={product.id}>
-            {product.product_name}
-          </option>
-        ))}
-      </select>
-      <input
-        type="number"
-        value={item.quantity}
-        onChange={(e) => handleQuantityChange(index, e.target.value)}
-        min="0"
-        className="mr-2 hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400 w-20"
-        placeholder="Quantity"
-      />
-      <div className="flex w-24 justify-between">
-        <button
-          onClick={() => handleRemoveProduct(index)}
-          className="bg-red-500 text-white px-2 py-1 rounded-md w-10 hide-button invisible"
-        >
-          -
-        </button>
-        <button
-          onClick={handleAddProduct}
-          className="bg-green-500 text-white px-2 py-1 rounded-md w-10"
-        >
-          +
-        </button>
-      </div>
-    </div>
-  ))}
-</div>
-
+            <Select
+              options={customerOptions}
+              value={customer}
+              onChange={setCustomer}
+              placeholder="Select Customer..."
+            />
+            <Select
+              options={countryOptions}
+              value={country}
+              onChange={setCountry}
+              placeholder="Select Country..."
+            />
+            <div className="relative">
+              <input
+                type="text"
+                value={orderDate}
+                onChange={(e) => setOrderDate(e.target.value)}
+                onFocus={() => setShowDatePicker(!showDatePicker)}
+                placeholder="Select Order Date..."
+                className="w-full hover:border-gray-600 h-10 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400 mb-4"
+              />
+              {showDatePicker && (
+                <input
+                  type="date"
+                  value={orderDate}
+                  onChange={(e) => setOrderDate(e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                  className="absolute top-full left-0 w-full hover:border-gray-600 border-2 rounded-xl py-1 pl-2 outline-none border-gray-400"
+                />
+              )}
+            </div>
+            <div className="w-full border-2 rounded-xl mb-4 p-2">
+              <p className="mb-2 font-semibold">Select Products:</p>
+              {orderItems.map((item, index) => (
+                <div key={index} className="flex items-center mb-2">
+                  <select
+                    value={item.productId}
+                    onChange={(e) => handleProductChange(index, e.target.value)}
+                    className="mr-2 hover:border-gray-600 h-10 border-2 w-[500px] rounded-xl py-1 pl-2 pr-4 outline-none border-gray-400"
+                  >
+                    <option value="">Select Product...</option>
+                    {products?.map((product) => (
+                      <option key={product.id} value={product.id}>
+                        {product.product_name}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    type="number"
+                    value={item.quantity}
+                    onChange={(e) => handleQuantityChange(index, e.target.value)}
+                    min="0"
+                    className="mr-2 hover:border-gray-600 h-10 w-[103px] border-2 rounded-xl py-1 pl-2 pr-4 outline-none border-gray-400 w-20"
+                    placeholder="Quantity"
+                  />
+                  <div className="flex w-24 justify-between">
+                    <button
+                      onClick={() => handleRemoveProduct(index)}
+                      className="bg-red-500 text-white px-2 py-1 rounded-md w-10 hide-button invisible"
+                    >
+                      -
+                    </button>
+                    <button
+                      onClick={handleAddProduct}
+                      className="bg-green-500 text-white px-2 py-1 rounded-md w-10"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
         <Box className="flex justify-center mt-[50px] gap-5">
