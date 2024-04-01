@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import { Modal } from '@mui/material';
-import Box from '@mui/material/Box';
-import axiosInstance from '../Api/axios';
+import { Modal } from "@mui/material";
+import Box from "@mui/material/Box";
+import axiosInstance from "../Api/axios";
 
 const ModalEdit = ({
   isModalOpen,
@@ -13,16 +13,26 @@ const ModalEdit = ({
   subHeaderText,
 }) => {
   const [name, setName] = useState(supplier.name);
-
   const handleSubmit = async () => {
-    const res = await axiosInstance.put(`/suppliers/${supplier.id}`, {
-      name,
-    });
-    if (res.status === 200) {
-      closeModal();
-      getData();
-    } else {
-      console.error(res);
+    try {
+      // Check if the name field is empty
+      if (!name.trim()) {
+        console.error("Name field cannot be empty");
+        return;
+      }
+
+      const res = await axiosInstance.put(`/suppliers/${supplier.id}`, {
+        name,
+      });
+
+      if (res.status === 200) {
+        closeModal();
+        getData();
+      } else {
+        console.error(res);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
   return (

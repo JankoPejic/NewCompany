@@ -7,19 +7,36 @@ import axiosInstance from "../Api/axios";
 const ModalEdit = ({ isModalOpen, customer, closeModal, getData }) => {
   const [name, setName] = useState(customer.name);
   const [address, setAddress] = useState(customer.address);
-
+  console.log(customer, "customer");
   const handleSubmit = async () => {
-    const res = await axiosInstance.put(`/customers/${customer.id}`, {
-      name,
-      address,
-    });
-    if (res.status === 200) {
-      closeModal();
-      setName("");
-      setAddress("");
-      getData();
-    } else {
-      console.error(res);
+    try {
+      const updatedData = {};
+
+      // Check if name field has been changed
+      if (name !== customer.name) {
+        updatedData.name = name;
+      }
+
+      // Check if address field has been changed
+      if (address !== customer.address) {
+        updatedData.address = address;
+      }
+
+      const res = await axiosInstance.put(
+        `/customers/${customer.id}`,
+        updatedData
+      );
+
+      if (res.status === 200) {
+        closeModal();
+        setName("");
+        setAddress("");
+        getData();
+      } else {
+        console.error(res);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
   return (
