@@ -34,7 +34,7 @@ const Orders = () => {
   const [deleteId, setDeleteId] = useState(null);
   const [products, setProducts] = useState(null);
   const [orders, setOrders] = useState([])
-
+  
 async function getOrders (user) {
   try{
     if(user){

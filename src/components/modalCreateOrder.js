@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal } from "@mui/material";
 import Box from "@mui/material/Box";
 import axiosInstance from "../services/axiosInstance";
@@ -18,20 +18,30 @@ const ModalCreateOrder = ({
   const [country, setCountry] = useState("Select Country");
   const [orderDate, setOrderDate] = useState("");
   const [orderItems, setOrderItems] = useState([{ productId: "", quantity: "" }]);
-  const [showDatePicker, setShowDatePicker] = useState(false); // State to manage visibility of date picker
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [totalAmount, setTotalAmount] = useState(0);
+  const date = new Date().toDateString()
+
+  useEffect(() => {
+    let total = 0;
+    orderItems.forEach(item => {
+      total+= item.price *  item.quantity
+    });
+    setTotalAmount(total);
+  }, [orderItems]);
 
   const customerOptions = customers.map(customer => ({
     label: customer.name,
-    value: customer.id
+    id: customer.id
   }));
 
   const countryOptions = countries.map(country => ({
     label: country.name,
-    value: country.id
+    id: country.id
   }));
 
   const handleAddProduct = () => {
-    setOrderItems([...orderItems, { productId: "", quantity: "" }]);
+    setOrderItems([...orderItems, { productId: "", quantity: "" , price: ""}]);
     
     setTimeout(() => {
       let hiddenButtons = document.getElementsByClassName("hide-button");
@@ -55,7 +65,9 @@ const ModalCreateOrder = ({
 
   const handleProductChange = (index, productId) => {
     const updatedOrderItems = [...orderItems];
+    const product = products.filter(product=> product.id == productId)
     updatedOrderItems[index].productId = productId;
+    updatedOrderItems[index].price = product[0].price;
     setOrderItems(updatedOrderItems);
   };
 
@@ -67,26 +79,33 @@ const ModalCreateOrder = ({
 
   const handleSubmit = async () => {
     try {
-      const res = await axiosInstance.post(`/orders`, {
-        customer_name: customer ? customer.label : "",
-        order_date: orderDate,
-        products: orderItems.filter(item => item.productId !== "" && item.quantity !== "")
-      });
-      if (res.status === 201) {
-        closeModal();
-        setCustomer("Select Customer");
-        setCountry("Select Country");
-        setOrderDate("");
-        setOrderItems([{ productId: "", quantity: "" }]);
-        getData();
-      } else {
-        console.error(res);
+      let postData = {
+        customer: customer,
+        country_code: country,
+        date: orderDate ? orderDate : date,
+        products: orderItems
       }
+      console.log('postData :>> ', postData);
+      // const res = await axiosInstance.post(`/orders`, {
+      //   customer_name: customer ? customer.label : "",
+      //   order_date: orderDate,
+      //   products: orderItems.filter(item => item.productId !== "" && item.quantity !== "")
+      // });
+      // if (res.status === 201) {
+      //   closeModal();
+      //   setCustomer("Select Customer");
+      //   setCountry("Select Country");
+      //   setOrderDate(date);
+      //   setOrderItems([{ productId: "", quantity: "" , price: ""}]);
+      //   getData();
+      // } else {
+      //   console.error(res);
+      // }
     } catch (error) {
       console.error(error);
     }
   };
-
+  console.log('orderItems :>> ', orderItems);
   return (
     <Modal
       open={isModalOpen}
@@ -95,7 +114,7 @@ const ModalCreateOrder = ({
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <div className="bg-white w-[800px] rounded-xl p-6 flex flex-col relative overflow-hidden">
+      <div className="bg-white w-[900px] rounded-xl p-6 flex flex-col relative overflow-hidden">
         <div className="pb-6">
           <p className="pb-4 text-lg font-semibold text-center">New Order</p>
           <div className="flex-col">
@@ -114,7 +133,7 @@ const ModalCreateOrder = ({
             <div className="relative">
               <input
                 type="text"
-                value={orderDate}
+                value={date}
                 onChange={(e) => setOrderDate(e.target.value)}
                 onFocus={() => setShowDatePicker(!showDatePicker)}
                 placeholder="Select Order Date..."
@@ -142,7 +161,8 @@ const ModalCreateOrder = ({
                     <option value="">Select Product...</option>
                     {products?.map((product) => (
                       <option key={product.id} value={product.id}>
-                        {product.product_name}
+                        {"ID: " + product.id}
+                        {" "+product.product_name}
                       </option>
                     ))}
                   </select>
@@ -168,6 +188,7 @@ const ModalCreateOrder = ({
                       +
                     </button>
                   </div>
+                  <div className="ml-2">Total: {item.price ? item.quantity * item.price : "0"}</div>
                 </div>
               ))}
             </div>
