@@ -6,10 +6,10 @@ import axiosInstance from "../Api/axios";
 const ModalEdit = ({
   isModalOpen,
   product,
-  closeModal,
   getData,
   supplierList,
   countries,
+  closeModal,
 }) => {
   const [name, setName] = useState("");
   const [selectedSupplier, setSelectedSupplier] = useState("");
@@ -38,16 +38,29 @@ const ModalEdit = ({
       console.error("Product is undefined");
       return;
     }
+    // Find the supplier id and country id based on the selected names
+    const selectedSupplierId = supplierList.find(
+      (supplier) => supplier.name === selectedSupplier
+    )?.id;
+    const selectedCountryId = countries.find(
+      (countryItem) => countryItem.name === country
+    )?.id;
+
+    if (!selectedSupplierId || !selectedCountryId) {
+      console.error("Selected supplier or country is not found in the list");
+      return;
+    }
 
     try {
       const res = await axiosInstance.put(`/products/${product.id}`, {
         product_name: name,
-        supplier_name: selectedSupplier,
-        country_name: country,
+        supplier_id: selectedSupplierId,
+        country_id: selectedCountryId,
         price: parseFloat(price),
       });
       console.log(res.data);
-      // Rest of the code...
+      closeModal();
+      getData();
     } catch (error) {
       console.error(error.response.data);
     }
